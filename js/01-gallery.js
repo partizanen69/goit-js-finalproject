@@ -36,15 +36,18 @@ galleyUlElement.addEventListener("click", (e) => {
 
   imgModal.show();
 
+  let closeInProgress = false;
   const closeImgModal = (e) => {
-    if (e.key !== "Escape") {
+    if (e.key !== "Escape" || closeInProgress) {
       return;
     }
 
     console.log("Closing full image modal...");
 
+    closeInProgress = true;
     imgModal.close(() => {
       document.removeEventListener("keyup", closeImgModal);
+      closeInProgress = false;
     });
   };
 
