@@ -30,26 +30,32 @@ galleyUlElement.addEventListener("click", (e) => {
 
   const originalImgUrl = e.target.dataset.source;
 
-  const imgModal = basicLightbox.create(`
-    <img src="${originalImgUrl}" width="800" height="600">
-`);
+  let closeInProgress = false;
+
+  const imgModal = basicLightbox.create(
+    `<img src="${originalImgUrl}" width="800" height="600">`,
+    {
+      onShow: () => {
+        document.addEventListener("keydown", closeImgModal);
+      },
+      onClose: () => {
+        document.removeEventListener("keydown", closeImgModal);
+        closeInProgress = false;
+        console.log("Full image modal has been closed");
+      },
+    }
+  );
 
   imgModal.show();
 
-  let closeInProgress = false;
-  const closeImgModal = (e) => {
+  function closeImgModal(e) {
     if (e.key !== "Escape" || closeInProgress) {
       return;
     }
 
-    console.log("Closing full image modal...");
+    console.log("Closing full image modal on Escape button...");
 
     closeInProgress = true;
-    imgModal.close(() => {
-      document.removeEventListener("keyup", closeImgModal);
-      closeInProgress = false;
-    });
-  };
-
-  document.addEventListener("keyup", closeImgModal);
+    imgModal.close();
+  }
 });
